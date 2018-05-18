@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using scrapper.Scrapper.Entities;
 
 namespace scrapper
 {
@@ -11,11 +12,13 @@ namespace scrapper
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        private Player _player;
         
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+            _player = new Player(this);
         }
 
         /// <summary>
@@ -27,7 +30,7 @@ namespace scrapper
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-
+            _player.Initialize();
             base.Initialize();
         }
 
@@ -63,6 +66,7 @@ namespace scrapper
                 Exit();
 
             // TODO: Add your update logic here
+            _player.Update(gameTime);
 
             base.Update(gameTime);
         }
@@ -74,8 +78,8 @@ namespace scrapper
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
-
             // TODO: Add your drawing code here
+            _player.Draw(gameTime);
 
             base.Draw(gameTime);
         }
