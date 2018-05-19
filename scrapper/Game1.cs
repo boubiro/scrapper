@@ -22,6 +22,7 @@ namespace scrapper
         private Map _map;
 
         public Camera Camera => _camera;
+        public Rectangle Map => _map.Dimensions;
         
         public Game1()
         {

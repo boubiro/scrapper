@@ -57,7 +57,7 @@ namespace scrapper.Scrapper.Animation
             var source = new Rectangle(_currentAnimationIndex * _spriteWidth, _animationIndex * _spriteHeight,
                 _spriteWidth, _spriteHeight);
 
-            ((Game1) Game).SpriteBatch.Draw(_sprite, Position - new Vector2(_spriteWidth / 2f, _spriteHeight / 2f), source, Color.White);
+            ((Game1) Game).SpriteBatch.Draw(_sprite, Position - new Vector2(_spriteWidth / 2f, _spriteHeight / 2f), source, _color);
         }
     }
 }

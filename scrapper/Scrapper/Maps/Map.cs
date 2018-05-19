@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using scrapper.Scrapper.Entities;
 using scrapper.Scrapper.Entities.Mechanics;
 using scrapper.Scrapper.Entities.Mechanics.Enemies;
+using scrapper.Scrapper.Helper;
 
 namespace scrapper.Scrapper.Maps
 {
@@ -13,7 +15,7 @@ namespace scrapper.Scrapper.Maps
         private readonly List<Entity> _cmponentsToRemove = new List<Entity>();
         private Rectangle _dimensions;
 
-        private Rectangle Dimensions
+        public Rectangle Dimensions
         {
             get => _dimensions;
             set
@@ -85,6 +87,8 @@ namespace scrapper.Scrapper.Maps
 
         public override void Draw(GameTime gameTime)
         {
+            DrawingHelper.DrawRectangle(((Game1) this.Game).SpriteBatch, ContentLoader.GetResource<Texture2D>(EPrefab.pixel), Dimensions, 3, Color.Black);
+
             foreach (var drawableGameComponent in _visibleComponents)
             {
                 drawableGameComponent.Draw(gameTime);

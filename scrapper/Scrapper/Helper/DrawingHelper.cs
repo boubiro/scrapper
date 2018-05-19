@@ -32,5 +32,13 @@ namespace scrapper.Scrapper.Helper
                 0);
 
         }
+
+        public static void DrawRectangle(SpriteBatch sb, Texture2D texture, Rectangle rectangle, int width, Color color)
+        {
+            DrawLine(sb, texture, new Vector2(rectangle.X, rectangle.Y), new Vector2(rectangle.X + rectangle.Width, rectangle.Y), width, color);
+            DrawLine(sb, texture, new Vector2(rectangle.X + rectangle.Width, rectangle.Y), new Vector2(rectangle.X + rectangle.Width, rectangle.Y + rectangle.Height), width, color);
+            DrawLine(sb, texture, new Vector2(rectangle.X, rectangle.Y + rectangle.Height), new Vector2(rectangle.X + rectangle.Width, rectangle.Y + rectangle.Height), width, color);
+            DrawLine(sb, texture, new Vector2(rectangle.X, rectangle.Y), new Vector2(rectangle.X, rectangle.Y + rectangle.Height), width, color);
+        }
     }
 }

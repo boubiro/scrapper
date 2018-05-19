@@ -15,7 +15,7 @@ namespace scrapper.Scrapper.Entities
         private const float TOLERANCE = 0.001f;
         private bool _dodged;
 
-        public Player(Game game) : base(game, 32, 32, 4, TimeSpan.FromMilliseconds(100), EPrefab.placeholder, Vector2.Zero, Color.White)
+        public Player(Game game) : base(game, 32, 32, 4, TimeSpan.FromMilliseconds(100), EPrefab.placeholder, Vector2.One * 300, Color.White)
         {
         }
 
@@ -70,6 +70,18 @@ namespace scrapper.Scrapper.Entities
             }
 
             Position += direction * (float) gameTime.ElapsedGameTime.TotalSeconds * MoveSpeed;
+            Position = ClampToMap(Position);
+        }
+
+        private Vector2 ClampToMap(Vector2 vec)
+        {
+            var map = ((Game1) this.Game).Map;
+            if (vec.X < map.X) vec.X = map.X;
+            if (vec.X > map.X + map.Width) vec.X = map.X + map.Width;
+            if (vec.Y < map.Y) vec.Y = map.Y;
+            if (vec.Y > map.Y + map.Height) vec.Y = map.Y + map.Height;
+
+            return vec;
         }
 
         public override void Draw(GameTime gameTime)
