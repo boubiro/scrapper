@@ -13,10 +13,10 @@ namespace scrapper.Scrapper.Animation
         private readonly byte _spriteWidth;
         private readonly EPrefab _textureName;
         private byte _animationIndex;
+        private Color _color;
         private byte _currentAnimationIndex;
         private TimeSpan _elapsedSinceLastAnimationChange = TimeSpan.Zero;
         private Texture2D _sprite;
-        private Color _color;
 
         public AnimatedSprite(Game game, byte spriteWidth, byte spriteHeight, byte animationStepCount,
             TimeSpan animationStepTime, EPrefab textureName, Vector2 position, Color color) : base(game, position)
@@ -46,25 +46,18 @@ namespace scrapper.Scrapper.Animation
 
         public override void Draw(GameTime gameTime)
         {
-            if (_animationStepCount > 0)
+            _elapsedSinceLastAnimationChange += gameTime.ElapsedGameTime;
+            if (_elapsedSinceLastAnimationChange > _animationStepTime)
             {
-                _elapsedSinceLastAnimationChange += gameTime.ElapsedGameTime;
-                if (_elapsedSinceLastAnimationChange > _animationStepTime)
-                {
-                    _elapsedSinceLastAnimationChange = TimeSpan.Zero;
-                    _currentAnimationIndex++;
-                    if (_currentAnimationIndex >= _animationStepCount) _currentAnimationIndex = 0;
-                }
-
-                var source = new Rectangle(_currentAnimationIndex * _spriteWidth, _animationIndex * _spriteHeight,
-                    _spriteWidth, _spriteHeight);
-
-                ((Game1)this.Game).SpriteBatch.Draw(_sprite, Position, source, Color.White);
+                _elapsedSinceLastAnimationChange = TimeSpan.Zero;
+                _currentAnimationIndex++;
+                if (_currentAnimationIndex >= _animationStepCount) _currentAnimationIndex = 0;
             }
-            else
-            {
-                ((Game1)this.Game).SpriteBatch.Draw(_sprite, Position, Color.White);
-            }
+
+            var source = new Rectangle(_currentAnimationIndex * _spriteWidth, _animationIndex * _spriteHeight,
+                _spriteWidth, _spriteHeight);
+
+            ((Game1) Game).SpriteBatch.Draw(_sprite, Position - new Vector2(_spriteWidth / 2f, _spriteHeight / 2f), source, Color.White);
         }
     }
 }

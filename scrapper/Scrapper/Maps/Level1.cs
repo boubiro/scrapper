@@ -31,13 +31,13 @@ namespace scrapper.Scrapper.Maps
                         },
                         LaserEnabled = false,
                         BulletCount = 5,
-                        LaserDelay = TimeSpan.FromMilliseconds(3000),
-                        ProjectileVelocity = 150f,
+                        LaserDelay = TimeSpan.FromMilliseconds(500),
+                        ProjectileVelocity = 250f,
                         MaxHealth = 200,
                         HasPhases = false,
-                        ProjectilesCooldown = TimeSpan.FromMilliseconds(10000),
+                        ProjectilesCooldown = TimeSpan.FromMilliseconds(200),
                         PhasingHealth = 50,
-                        BulletTickAngle = 1f,
+                        BulletTickAngle = 8f,
                         LaserCooldown = TimeSpan.FromMilliseconds(20000)
                     },
                     Type = EMechanicType.Bender

@@ -14,6 +14,7 @@ namespace scrapper.Scrapper.Entities.Mechanics.Enemies
         private TimeSpan _timeSinceLastLaser = TimeSpan.Zero;
         private bool _laserFired = true;
         private TimeSpan _timeSinceLastBulletSpawn = TimeSpan.Zero;
+        private int _tickindex = 0;
 
         public Bender(Game game, BenderSettings settings, Vector2 position) : base(game, 32, 32, 4, TimeSpan.FromMilliseconds(500), EPrefab.placeholder, settings, position)
         {
@@ -66,13 +67,18 @@ namespace scrapper.Scrapper.Entities.Mechanics.Enemies
             {
                 var bullets = new List<Entity>();
                 var anglePerBullet = (360f / _settings.BulletCount) * VectorHelper.DegreeToRadian;
+                var maxTick = 1 / (_settings.BulletTickAngle / 360f);
                 for (var i = 0; i < _settings.BulletCount; i++)
                 {
-                    var direction = (Vector2.UnitY * _settings.ProjectileVelocity).Rotate(anglePerBullet * i);
+                    var direction = (Vector2.UnitY * _settings.ProjectileVelocity).Rotate(anglePerBullet * i + _settings.BulletTickAngle * VectorHelper.DegreeToRadian * _tickindex);
                     var projectile = new Projectile(this.Game, _settings.ProjectileSettings, this.Position, direction);
                     projectile.Initialize();
                     bullets.Add(projectile);
                 }
+
+                if (_tickindex > maxTick)
+                    _tickindex = 1;
+                _tickindex++;
 
                 ((Game1) this.Game).AddEntities(bullets);
             }
