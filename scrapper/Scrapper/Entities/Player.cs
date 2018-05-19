@@ -1,11 +1,12 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using scrapper.Scrapper.Animation;
 
 namespace scrapper.Scrapper.Entities
 {
-    internal class Player : AnimatedSprite
+    public class Player : AnimatedSprite
     {
         private const float MoveSpeed = 200.5f;
         private const float DodgeDistance = 30f;
@@ -15,7 +16,9 @@ namespace scrapper.Scrapper.Entities
         private bool _dodged;
         private Vector2 _position;
 
-        public Player(Game game) : base(game, 32, 32, 4, TimeSpan.FromMilliseconds(100), "placeholder")
+        public Vector2 Position => _position;
+
+        public Player(Game game, SpriteBatch spriteBatch) : base(game, 32, 32, 4, TimeSpan.FromMilliseconds(100), "placeholder", spriteBatch)
         {
             _position = Vector2.Zero;
         }
@@ -28,6 +31,7 @@ namespace scrapper.Scrapper.Entities
             if (pad.IsConnected)
             {
                 direction = pad.ThumbSticks.Left;
+                direction.Y = -direction.Y;
                 if (pad.IsButtonDown(Buttons.X)) dodging = true;
             }
             else

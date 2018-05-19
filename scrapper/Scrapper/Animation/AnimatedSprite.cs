@@ -16,23 +16,18 @@ namespace scrapper.Scrapper.Animation
         private byte _currentAnimationIndex;
         private TimeSpan _elapsedSinceLastAnimationChange = TimeSpan.Zero;
         private Texture2D _sprite;
-        private SpriteBatch _spriteBatch;
+        private readonly SpriteBatch _spriteBatch;
 
         public AnimatedSprite(Game game, byte spriteWidth, byte spriteHeight, byte animationStepCount,
-            TimeSpan animationStepTime, string textureName) : base(game)
+            TimeSpan animationStepTime, string textureName, SpriteBatch spriteBatch) : base(game)
         {
             _spriteWidth = spriteWidth;
             _spriteHeight = spriteHeight;
             _animationStepTime = animationStepTime;
             _textureName = textureName;
+            _spriteBatch = spriteBatch;
             _game = game;
             _animationStepCount = animationStepCount;
-        }
-
-        public override void Initialize()
-        {
-            _spriteBatch = new SpriteBatch(_game.GraphicsDevice);
-            base.Initialize();
         }
 
         public void SetAnimation(byte index)
@@ -62,10 +57,8 @@ namespace scrapper.Scrapper.Animation
 
             var source = new Rectangle(_currentAnimationIndex * _spriteWidth, _animationIndex * _spriteHeight,
                 _spriteWidth, _spriteHeight);
-
-            _spriteBatch.Begin();
+            
             _spriteBatch.Draw(_sprite, position, source, Color.White);
-            _spriteBatch.End();
         }
     }
 }
