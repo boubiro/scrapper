@@ -24,6 +24,7 @@ namespace scrapper.Scrapper.Entities
         public Player(Game game) : base(game, 32, 32, 4, TimeSpan.FromMilliseconds(100), TimeSpan.FromMilliseconds(80), EPrefab.placeholder,
             Vector2.One * 300, Color.White)
         {
+            HitBoxRadius = 16;
         }
 
         public override void Update(GameTime gameTime)

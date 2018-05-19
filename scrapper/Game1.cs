@@ -115,6 +115,13 @@ namespace scrapper
             foreach (var dynamicEntity in _dynamicEntities)
             {
                 dynamicEntity.Update(gameTime);
+                foreach (var entity in _dynamicEntities)
+                {
+                    if (dynamicEntity.DidCollide) break;
+                    dynamicEntity.Collide(entity);
+                }
+
+                dynamicEntity.Collide(_player);
             }
 
             foreach (var entity in _entitiesToRemove)

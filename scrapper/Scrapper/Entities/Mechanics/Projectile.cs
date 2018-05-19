@@ -15,6 +15,8 @@ namespace scrapper.Scrapper.Entities.Mechanics
         {
             _settings = settings;
             _direction = direction;
+            Collision += entity => Die();
+            HitBoxRadius = settings.Width / 2f;
         }
 
         public override void Update(GameTime gameTime)
