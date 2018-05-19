@@ -11,8 +11,9 @@ namespace scrapper.Scrapper.Entities
     {
         public Vector2 Position { get; protected set; }
 
-        public Entity(Game game) : base(game)
+        public Entity(Game game, Vector2 position) : base(game)
         {
+            Position = position;
         }
     }
 }

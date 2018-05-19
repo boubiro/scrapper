@@ -41,7 +41,7 @@ namespace scrapper.Scrapper.Maps
         {
             public Vector2 Position;
             public EMechanicType Type;
-            public MechanicSettings Settings;
+            public IMechanicSettings Settings;
         }
 
         public IEnumerator GetEnumerator()

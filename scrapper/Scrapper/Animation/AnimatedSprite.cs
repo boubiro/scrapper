@@ -18,7 +18,7 @@ namespace scrapper.Scrapper.Animation
         private Texture2D _sprite;
 
         public AnimatedSprite(Game game, byte spriteWidth, byte spriteHeight, byte animationStepCount,
-            TimeSpan animationStepTime, EPrefab textureName) : base(game)
+            TimeSpan animationStepTime, EPrefab textureName, Vector2 position) : base(game, position)
         {
             _spriteWidth = spriteWidth;
             _spriteHeight = spriteHeight;

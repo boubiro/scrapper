@@ -15,9 +15,8 @@ namespace scrapper.Scrapper.Entities
         private const float TOLERANCE = 0.001f;
         private bool _dodged;
 
-        public Player(Game game) : base(game, 32, 32, 4, TimeSpan.FromMilliseconds(100), EPrefab.placeholder)
+        public Player(Game game) : base(game, 32, 32, 4, TimeSpan.FromMilliseconds(100), EPrefab.placeholder, Vector2.Zero)
         {
-            Position = Vector2.Zero;
         }
 
         public override void Update(GameTime gameTime)

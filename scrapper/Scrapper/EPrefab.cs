@@ -8,6 +8,7 @@ namespace scrapper.Scrapper
 {
     public enum EPrefab
     {
-        placeholder
+        placeholder,
+        pixel
     }
 }
