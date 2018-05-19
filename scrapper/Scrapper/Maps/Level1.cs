@@ -7,7 +7,7 @@ namespace scrapper.Scrapper.Maps
 {
     internal class Level1 : Map
     {
-        public Level1(Game game) : base(game, new Rectangle(-200, -200, 400, 400))
+        public Level1(Game game) : base(game, new Rectangle(-200, -200, 1200, 1200))
         {
         }
 
@@ -24,15 +24,15 @@ namespace scrapper.Scrapper.Maps
                         ProjectileSettings = new ProjectileSettings
                         {
                             Color = Color.Red,
-                            Height = 5,
-                            Width = 5,
+                            Height = 10,
+                            Width = 10,
                             Prefab = EPrefab.pixel,
                             LifeTime = TimeSpan.FromMilliseconds(5000)
                         },
                         LaserEnabled = false,
                         BulletCount = 5,
                         LaserDelay = TimeSpan.FromMilliseconds(500),
-                        ProjectileVelocity = 250f,
+                        ProjectileVelocity = 150f,
                         MaxHealth = 200,
                         HasPhases = false,
                         ProjectilesCooldown = TimeSpan.FromMilliseconds(200),

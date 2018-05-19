@@ -11,7 +11,7 @@ namespace scrapper.Scrapper.Entities.Mechanics
         private readonly Vector2 _direction;
 
         public Projectile(Game game, ProjectileSettings settings, Vector2 position, Vector2 direction) :
-            base(game, settings.Width, settings.Height, 0, TimeSpan.Zero, settings.Prefab, position, settings.Color)
+            base(game, settings.Width, settings.Height, 0, TimeSpan.Zero, TimeSpan.Zero, settings.Prefab, position, settings.Color)
         {
             _settings = settings;
             _direction = direction;

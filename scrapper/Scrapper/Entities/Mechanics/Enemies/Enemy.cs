@@ -14,8 +14,8 @@ namespace scrapper.Scrapper.Entities.Mechanics.Enemies
         private bool _hasPhased = false;
         private bool _isDead = false;
 
-        protected Enemy(Game game, byte spriteWidth, byte spriteHeight, byte animationStepCount, TimeSpan animationStepTime, EPrefab textureName, IEnemySettings settings, Vector2 position) :
-            base(game, spriteWidth, spriteHeight, animationStepCount, animationStepTime, textureName, position, Color.White)
+        protected Enemy(Game game, byte spriteWidth, byte spriteHeight, byte animationStepCount, TimeSpan animationStepTime, TimeSpan attackAnimationStepTime, EPrefab textureName, IEnemySettings settings, Vector2 position) :
+            base(game, spriteWidth, spriteHeight, animationStepCount, animationStepTime, attackAnimationStepTime, textureName, position, Color.White)
         {
             this._maxHealth = settings.MaxHealth;
             _health = _maxHealth;

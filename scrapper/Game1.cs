@@ -23,6 +23,7 @@ namespace scrapper
 
         public Camera Camera => _camera;
         public Rectangle Map => _map.Dimensions;
+        public byte WallWidth => _map.WallWidth;
         
         public Game1()
         {
