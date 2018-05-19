@@ -9,6 +9,7 @@ namespace scrapper.Scrapper
     public enum EPrefab
     {
         placeholder,
-        pixel
+        pixel,
+        StandardFont
     }
 }

@@ -15,7 +15,7 @@ namespace scrapper.Scrapper.Entities
         private const float TOLERANCE = 0.001f;
         private bool _dodged;
 
-        public Player(Game game) : base(game, 32, 32, 4, TimeSpan.FromMilliseconds(100), EPrefab.placeholder, Vector2.Zero)
+        public Player(Game game) : base(game, 32, 32, 4, TimeSpan.FromMilliseconds(100), EPrefab.placeholder, Vector2.Zero, Color.White)
         {
         }
 
@@ -70,6 +70,13 @@ namespace scrapper.Scrapper.Entities
             }
 
             Position += direction * (float) gameTime.ElapsedGameTime.TotalSeconds * MoveSpeed;
+        }
+
+        public override void Draw(GameTime gameTime)
+        {
+            base.Draw(gameTime);
+
+            ((Game1) this.Game).SpriteBatch.DrawString(ContentLoader.GetResource<SpriteFont>(EPrefab.StandardFont), Position.ToString(), Vector2.One * 10f, Color.White);
         }
     }
 }

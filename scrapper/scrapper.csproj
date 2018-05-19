@@ -56,9 +56,13 @@
     <Compile Include="Scrapper\Entities\Mechanics\Enemies\Enemy.cs" />
     <Compile Include="Scrapper\Entities\Mechanics\Enemies\IEnemySettings.cs" />
     <Compile Include="Scrapper\Entities\Mechanics\MechanicSettings.cs" />
+    <Compile Include="Scrapper\Entities\Mechanics\Projectile.cs" />
+    <Compile Include="Scrapper\Entities\Mechanics\ProjectileSettings.cs" />
     <Compile Include="Scrapper\Entities\Player.cs" />
     <Compile Include="Scrapper\EPrefab.cs" />
     <Compile Include="Scrapper\Helper\DrawingHelper.cs" />
+    <Compile Include="Scrapper\Helper\VectorHelper.cs" />
+    <Compile Include="Scrapper\Maps\Level1.cs" />
     <Compile Include="Scrapper\Maps\Map.cs" />
     <Compile Include="Scrapper\Maps\MapData.cs" />
   </ItemGroup>

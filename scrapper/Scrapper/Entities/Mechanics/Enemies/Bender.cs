@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
+using scrapper.Scrapper.Helper;
 
 namespace scrapper.Scrapper.Entities.Mechanics.Enemies
 {
@@ -44,7 +45,7 @@ namespace scrapper.Scrapper.Entities.Mechanics.Enemies
                 if (_timeSinceLastBulletSpawn > _settings.ProjectilesCooldown)
                 {
                     _timeSinceLastBulletSpawn = TimeSpan.Zero;
-                    // Fire!
+                    FireBullets();
                 }
             }
 
@@ -57,6 +58,24 @@ namespace scrapper.Scrapper.Entities.Mechanics.Enemies
             var laser = rand.Next(0, 1);
             _settings.LaserEnabled = laser == 0;
             _settings.ProjectileMode = (BenderSettings.EBenderProjectileMode) rand.Next(laser, 2);
+        }
+
+        private void FireBullets()
+        {
+            if (_settings.ProjectileMode == BenderSettings.EBenderProjectileMode.Spiral)
+            {
+                var bullets = new List<Entity>();
+                var anglePerBullet = (360f / _settings.BulletCount) * VectorHelper.DegreeToRadian;
+                for (var i = 0; i < _settings.BulletCount; i++)
+                {
+                    var direction = (Vector2.UnitY * _settings.ProjectileVelocity).Rotate(anglePerBullet * i);
+                    var projectile = new Projectile(this.Game, _settings.ProjectileSettings, this.Position, direction);
+                    projectile.Initialize();
+                    bullets.Add(projectile);
+                }
+
+                ((Game1) this.Game).AddEntities(bullets);
+            }
         }
     }
 }

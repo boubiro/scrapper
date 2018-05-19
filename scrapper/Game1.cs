@@ -1,8 +1,10 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using scrapper.Scrapper;
 using scrapper.Scrapper.Entities;
+using scrapper.Scrapper.Maps;
 
 namespace scrapper
 {
@@ -11,19 +13,25 @@ namespace scrapper
     /// </summary>
     public class Game1 : Game
     {
-        GraphicsDeviceManager graphics;
+        readonly GraphicsDeviceManager graphics;
         public SpriteBatch SpriteBatch { get; private set; }
-        private Camera _camera;
-        private Player _player;
+        private readonly Camera _camera;
+        private readonly Player _player;
+        private readonly List<Entity> _dynamicEntities = new List<Entity>();
+        private readonly List<Entity> _entitiesToRemove = new List<Entity>();
+        private Map _map;
+
+        public Camera Camera => _camera;
         
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
+#if !DEBUG
             graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
             graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
             graphics.IsFullScreen = true;
+#endif
             graphics.ApplyChanges();
-
             Content.RootDirectory = "Content";
             ContentLoader.SetGame(this);
 
@@ -36,6 +44,21 @@ namespace scrapper
             };
 
             _player = new Player(this);
+            _map = new Level1(this);
+        }
+
+        public void AddEntities(List<Entity> entities)
+        {
+            foreach (var entity in entities)
+            {
+                entity.Dead += RemoveNextUpdate;
+            }
+            _dynamicEntities.AddRange(entities);
+        }
+
+        private void RemoveNextUpdate(Entity entity)
+        {
+            _entitiesToRemove.Add(entity);
         }
 
         /// <summary>
@@ -47,6 +70,7 @@ namespace scrapper
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
+            _map.Initialize();
             _player.Initialize();
             base.Initialize();
         }
@@ -81,8 +105,20 @@ namespace scrapper
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
+            _map.Update(gameTime);
+
             // TODO: Add your update logic here
             _player.Update(gameTime);
+
+            foreach (var dynamicEntity in _dynamicEntities)
+            {
+                dynamicEntity.Update(gameTime);
+            }
+
+            foreach (var entity in _entitiesToRemove)
+            {
+                _dynamicEntities.Remove(entity);
+            }
 
             base.Update(gameTime);
         }
@@ -97,7 +133,12 @@ namespace scrapper
             _camera.CenterOn(_player);
             SpriteBatch.Begin(transformMatrix:_camera.TranslationMatrix);
             // TODO: Add your drawing code here
+            _map.Draw(gameTime);
             _player.Draw(gameTime);
+            foreach (var entity in _dynamicEntities)
+            {
+                entity.Draw(gameTime);
+            }
             SpriteBatch.End();
             base.Draw(gameTime);
         }

@@ -14,13 +14,14 @@ namespace scrapper.Scrapper.Entities.Mechanics.Enemies
         public TimeSpan ProjectilesCooldown;
         public EBenderProjectileMode ProjectileMode;
         public uint BulletCount;
-        public float BulletAngle;
+        public float BulletTickAngle;
+        public ProjectileSettings ProjectileSettings;
+        public float ProjectileVelocity;
         
         public enum EBenderProjectileMode
         {
             None,
-            Spiral,
-            Pulse
+            Spiral
         }
 
         public float MaxHealth { get; set; }
