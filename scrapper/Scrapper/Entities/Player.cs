@@ -14,13 +14,10 @@ namespace scrapper.Scrapper.Entities
         // ReSharper disable once InconsistentNaming
         private const float TOLERANCE = 0.001f;
         private bool _dodged;
-        private Vector2 _position;
 
-        public Vector2 Position => _position;
-
-        public Player(Game game, SpriteBatch spriteBatch) : base(game, 32, 32, 4, TimeSpan.FromMilliseconds(100), "placeholder", spriteBatch)
+        public Player(Game game) : base(game, 32, 32, 4, TimeSpan.FromMilliseconds(100), EPrefab.placeholder)
         {
-            _position = Vector2.Zero;
+            Position = Vector2.Zero;
         }
 
         public override void Update(GameTime gameTime)
@@ -64,21 +61,16 @@ namespace scrapper.Scrapper.Entities
             if (Math.Abs(direction.X) < TOLERANCE)
             {
                 if (Math.Abs(direction.Y) > TOLERANCE)
-                    SetAnimation(direction.Y < 0 ? EView.back : EView.front);
+                    SetAnimation(direction.Y < 0 ? EView.Back : EView.Front);
                 else
-                    SetAnimation(EView.idle);
+                    SetAnimation(EView.Idle);
             }
             else
             {
-                SetAnimation(direction.X > 0 ? EView.right : EView.left);
+                SetAnimation(direction.X > 0 ? EView.Right : EView.Left);
             }
 
-            _position += direction * (float) gameTime.ElapsedGameTime.TotalSeconds * MoveSpeed;
-        }
-
-        public override void Draw(GameTime gameTime)
-        {
-            Draw(gameTime, _position);
+            Position += direction * (float) gameTime.ElapsedGameTime.TotalSeconds * MoveSpeed;
         }
     }
 }

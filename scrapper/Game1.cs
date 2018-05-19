@@ -1,7 +1,7 @@
-﻿using System.Diagnostics;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using scrapper.Scrapper;
 using scrapper.Scrapper.Entities;
 
 namespace scrapper
@@ -12,7 +12,7 @@ namespace scrapper
     public class Game1 : Game
     {
         GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;
+        public SpriteBatch SpriteBatch { get; private set; }
         private Camera _camera;
         private Player _player;
         
@@ -23,12 +23,19 @@ namespace scrapper
             graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
             graphics.IsFullScreen = true;
             graphics.ApplyChanges();
+
             Content.RootDirectory = "Content";
-            spriteBatch = new SpriteBatch(GraphicsDevice);
-            _camera = new Camera();
-            _camera.ViewportWidth = graphics.PreferredBackBufferWidth;
-            _camera.ViewportHeight = graphics.PreferredBackBufferHeight;
-            _player = new Player(this, spriteBatch);
+            ContentLoader.SetGame(this);
+
+            SpriteBatch = new SpriteBatch(GraphicsDevice);
+
+            _camera = new Camera
+            {
+                ViewportWidth = graphics.PreferredBackBufferWidth,
+                ViewportHeight = graphics.PreferredBackBufferHeight
+            };
+
+            _player = new Player(this);
         }
 
         /// <summary>
@@ -88,10 +95,10 @@ namespace scrapper
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
             _camera.CenterOn(_player);
-            spriteBatch.Begin(transformMatrix:_camera.TranslationMatrix);
+            SpriteBatch.Begin(transformMatrix:_camera.TranslationMatrix);
             // TODO: Add your drawing code here
             _player.Draw(gameTime);
-            spriteBatch.End();
+            SpriteBatch.End();
             base.Draw(gameTime);
         }
     }

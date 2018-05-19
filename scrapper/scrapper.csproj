@@ -48,7 +48,15 @@
     <Compile Include="Scrapper\Animation\AnimatedSprite.cs" />
     <Compile Include="Scrapper\Animation\EView.cs" />
     <Compile Include="Scrapper\Camera.cs" />
+    <Compile Include="Scrapper\ContentLoader.cs" />
+    <Compile Include="Scrapper\Entities\Entity.cs" />
+    <Compile Include="Scrapper\Entities\Mechanics\EMechanicType.cs" />
+    <Compile Include="Scrapper\Entities\Mechanics\Enemies\Enemy.cs" />
+    <Compile Include="Scrapper\Entities\Mechanics\MechanicSettings.cs" />
     <Compile Include="Scrapper\Entities\Player.cs" />
+    <Compile Include="Scrapper\EPrefab.cs" />
+    <Compile Include="Scrapper\Maps\Map.cs" />
+    <Compile Include="Scrapper\Maps\MapData.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">

@@ -1,32 +1,29 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using scrapper.Scrapper.Entities;
 
 namespace scrapper.Scrapper.Animation
 {
-    public class AnimatedSprite : DrawableGameComponent
+    public abstract class AnimatedSprite : Entity
     {
         private readonly byte _animationStepCount;
         private readonly TimeSpan _animationStepTime;
-        private readonly Game _game;
         private readonly byte _spriteHeight;
         private readonly byte _spriteWidth;
-        private readonly string _textureName;
+        private readonly EPrefab _textureName;
         private byte _animationIndex;
         private byte _currentAnimationIndex;
         private TimeSpan _elapsedSinceLastAnimationChange = TimeSpan.Zero;
         private Texture2D _sprite;
-        private readonly SpriteBatch _spriteBatch;
 
         public AnimatedSprite(Game game, byte spriteWidth, byte spriteHeight, byte animationStepCount,
-            TimeSpan animationStepTime, string textureName, SpriteBatch spriteBatch) : base(game)
+            TimeSpan animationStepTime, EPrefab textureName) : base(game)
         {
             _spriteWidth = spriteWidth;
             _spriteHeight = spriteHeight;
             _animationStepTime = animationStepTime;
             _textureName = textureName;
-            _spriteBatch = spriteBatch;
-            _game = game;
             _animationStepCount = animationStepCount;
         }
 
@@ -42,10 +39,10 @@ namespace scrapper.Scrapper.Animation
 
         protected override void LoadContent()
         {
-            _sprite = _game.Content.Load<Texture2D>(_textureName);
+            _sprite = ContentLoader.GetResource<Texture2D>(_textureName);
         }
 
-        public void Draw(GameTime gameTime, Vector2 position)
+        public void Draw(GameTime gameTime)
         {
             _elapsedSinceLastAnimationChange += gameTime.ElapsedGameTime;
             if (_elapsedSinceLastAnimationChange > _animationStepTime)
@@ -58,7 +55,7 @@ namespace scrapper.Scrapper.Animation
             var source = new Rectangle(_currentAnimationIndex * _spriteWidth, _animationIndex * _spriteHeight,
                 _spriteWidth, _spriteHeight);
             
-            _spriteBatch.Draw(_sprite, position, source, Color.White);
+            ((Game1)this.Game).SpriteBatch.Draw(_sprite, Position, source, Color.White);
         }
     }
 }
