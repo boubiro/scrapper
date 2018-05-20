@@ -32,6 +32,20 @@ namespace scrapper.Scrapper.Animation
             _color = color;
         }
 
+        public AnimatedSprite(Game game, byte spriteWidth, byte spriteHeight, byte animationStepCount,
+            TimeSpan animationStepTime, TimeSpan attackAnimationStepTime, EPrefab textureName, Vector2 position, Color color, float hitBoxRadius) : base(game, position, hitBoxRadius)
+        {
+            _spriteWidth = spriteWidth;
+            _spriteHeight = spriteHeight;
+            _animationStepTime = animationStepTime;
+            _attackAnimationStepTime = attackAnimationStepTime;
+            _textureName = textureName;
+            _animationStepCount = animationStepCount;
+            _color = color;
+        }
+
+        public event BasicEntityEvent DealDamage;
+
         protected void ResetCurrentAnimationStepIndex()
         {
             _currentAnimationStepIndex = 0;
@@ -62,6 +76,7 @@ namespace scrapper.Scrapper.Animation
                 if (_currentAnimationStepIndex == _animationStepCount)
                 {
                     _currentAnimationStepIndex = 0;
+                    if (_inAttackAnimation) DealDamage?.Invoke(this);
                     _inAttackAnimation = false;
                 }
             }

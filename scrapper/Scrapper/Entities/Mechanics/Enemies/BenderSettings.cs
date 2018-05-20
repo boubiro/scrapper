@@ -27,5 +27,6 @@ namespace scrapper.Scrapper.Entities.Mechanics.Enemies
         public float MaxHealth { get; set; }
         public bool HasPhases { get; set; }
         public float PhasingHealth { get; set; }
+        public float Hitbox { get; set; }
     }
 }

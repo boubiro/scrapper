@@ -11,12 +11,11 @@ namespace scrapper.Scrapper.Entities.Mechanics
         private readonly Vector2 _direction;
 
         public Projectile(Game game, ProjectileSettings settings, Vector2 position, Vector2 direction) :
-            base(game, settings.Width, settings.Height, 0, TimeSpan.Zero, TimeSpan.Zero, settings.Prefab, position, settings.Color)
+            base(game, settings.Width, settings.Height, 0, TimeSpan.Zero, TimeSpan.Zero, settings.Prefab, position, settings.Color, settings.Hitbox)
         {
             _settings = settings;
             _direction = direction;
             Collision += entity => Die();
-            HitBoxRadius = settings.Width / 2f;
         }
 
         public override void Update(GameTime gameTime)

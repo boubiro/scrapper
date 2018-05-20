@@ -27,18 +27,20 @@ namespace scrapper.Scrapper.Maps
                             Height = 10,
                             Width = 10,
                             Prefab = EPrefab.pixel,
-                            LifeTime = TimeSpan.FromMilliseconds(5000)
+                            LifeTime = TimeSpan.FromMilliseconds(5000),
+                            Hitbox = 5
                         },
                         LaserEnabled = false,
                         BulletCount = 15,
                         LaserDelay = TimeSpan.FromMilliseconds(500),
                         ProjectileVelocity = 150f,
-                        MaxHealth = 200,
+                        MaxHealth = 2,
                         HasPhases = false,
                         ProjectilesCooldown = TimeSpan.FromMilliseconds(800),
                         PhasingHealth = 50,
                         BulletTickAngle = 8f,
-                        LaserCooldown = TimeSpan.FromMilliseconds(20000)
+                        LaserCooldown = TimeSpan.FromMilliseconds(20000),
+                        Hitbox = 16
                     },
                     Type = EMechanicType.Bender
                 },

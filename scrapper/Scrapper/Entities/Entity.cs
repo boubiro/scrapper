@@ -5,7 +5,7 @@ namespace scrapper.Scrapper.Entities
 {
     public class Entity : DrawableGameComponent
     {
-        public delegate void Death(Entity entity);
+        public delegate void BasicEntityEvent(Entity entity);
 
         private bool _dieded;
         protected bool _collided;
@@ -15,11 +15,22 @@ namespace scrapper.Scrapper.Entities
             Position = position;
         }
 
+        public Entity(Game game, Vector2 position, float hitBoxRadius) : base(game)
+        {
+            Position = position;
+            HitBoxRadius = hitBoxRadius;
+        }
+
         public Vector2 Position { get; protected set; }
         public float HitBoxRadius { get; protected set; }
 
-        public event Death Dead;
-        public event Death Collision;
+        public event BasicEntityEvent Dead;
+        public event BasicEntityEvent Collision;
+
+        public virtual void GetAttacked(float Damage)
+        {
+
+        }
 
         protected void Die()
         {

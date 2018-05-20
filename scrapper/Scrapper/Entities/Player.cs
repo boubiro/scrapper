@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using scrapper.Scrapper.Animation;
+using scrapper.Scrapper.Helper;
 
 namespace scrapper.Scrapper.Entities
 {
@@ -12,6 +13,8 @@ namespace scrapper.Scrapper.Entities
         private const float DodgeDistance = 10f;
         private readonly TimeSpan _maxDodgeTimeSpan = TimeSpan.FromMilliseconds(100);
         private const bool Teleport = false;
+        public const float SwordRange = 20f;
+        public const float SwordSpread = 30f; // naming ftw, degree in both directions
 
         // ReSharper disable once InconsistentNaming
         private const float TOLERANCE = 0.001f;
@@ -19,13 +22,19 @@ namespace scrapper.Scrapper.Entities
         private bool _dodged;
         private Vector2 _lastDirection;
 
+        public float SwordDamage { get; private set; } = 1f;
+        public Vector2 LastDirection => _lastDirection;
+
         private TimeSpan _dodgeTimeSpan = TimeSpan.Zero;
 
-        public Player(Game game) : base(game, 32, 32, 4, TimeSpan.FromMilliseconds(100), TimeSpan.FromMilliseconds(80), EPrefab.placeholder,
+        public Player(Game game) : base(game, 32, 32, 4, TimeSpan.FromMilliseconds(100), TimeSpan.FromMilliseconds(80), EPrefab.player,
             Vector2.One * 300, Color.White)
         {
             HitBoxRadius = 16;
+            DealDamage += entity => PlayerAttack?.Invoke(this);
         }
+
+        public event BasicEntityEvent PlayerAttack;
 
         public override void Update(GameTime gameTime)
         {
@@ -114,6 +123,12 @@ namespace scrapper.Scrapper.Entities
 
             Position += direction * (float) gameTime.ElapsedGameTime.TotalSeconds * MoveSpeed;
             Position = ClampToMap(Position);
+        }
+
+        public new bool Collide(Entity other)
+        {
+            if (_dodgeTimeSpan > _maxDodgeTimeSpan || _dodgeTimeSpan == TimeSpan.Zero) return base.Collide(other);
+            return false;
         }
 
         private void Attack()

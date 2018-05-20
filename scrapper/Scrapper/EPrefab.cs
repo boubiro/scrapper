@@ -10,6 +10,7 @@ namespace scrapper.Scrapper
     {
         placeholder,
         pixel,
-        StandardFont
+        StandardFont,
+        player
     }
 }
