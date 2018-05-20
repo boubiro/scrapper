@@ -123,8 +123,8 @@ namespace scrapper
             Camera.CenterOn(_player);
             SpriteBatch.Begin(samplerState: SamplerState.PointClamp, transformMatrix: Camera.TranslationMatrix);
             // TODO: Add your drawing code here
-            _player.Draw(gameTime);
             _map.Draw(gameTime);
+            _player.Draw(gameTime);
             SpriteBatch.End();
             base.Draw(gameTime);
         }

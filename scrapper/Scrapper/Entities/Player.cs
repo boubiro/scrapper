@@ -10,7 +10,7 @@ namespace scrapper.Scrapper.Entities
     public class Player : AnimatedSprite
     {
         private const float MoveSpeed = 200.5f;
-        private const float DodgeDistance = 10f;
+        private const float DodgeDistance = 8f;
         private const bool Teleport = false;
         public const float SwordRange = 50f;
         public const float SwordSpread = 30f; // naming ftw, degree in both directions

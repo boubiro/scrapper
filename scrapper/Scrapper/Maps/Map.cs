@@ -17,6 +17,7 @@ namespace scrapper.Scrapper.Maps
         private readonly List<Entity> _visibleComponents = new List<Entity>();
         private Rectangle _dimensions;
         private MapData _mapData;
+        protected Texture2D Background;
 
         public Map(Game game, Rectangle dimensions) : base(game)
         {
@@ -149,9 +150,13 @@ namespace scrapper.Scrapper.Maps
 
         public override void Draw(GameTime gameTime)
         {
+            var sb = ((Game1) Game).SpriteBatch;
+
+            sb.Draw(Background, new Vector2(Dimensions.X, Dimensions.Y), Color.White);
+
             foreach (var entity in _dynamicEntities) entity.Draw(gameTime);
 
-            DrawingHelper.DrawRectangle(((Game1) Game).SpriteBatch, ContentLoader.GetResource<Texture2D>(EPrefab.pixel),
+            DrawingHelper.DrawRectangle(sb, ContentLoader.GetResource<Texture2D>(EPrefab.pixel),
                 Dimensions, WallWidth, Color.Black);
 
             foreach (var drawableGameComponent in _visibleComponents) drawableGameComponent.Draw(gameTime);

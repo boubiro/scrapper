@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using scrapper.Scrapper.Entities.Mechanics;
 using scrapper.Scrapper.Entities.Mechanics.Enemies;
 
@@ -7,8 +8,9 @@ namespace scrapper.Scrapper.Maps
 {
     internal class Level1 : Map
     {
-        public Level1(Game game) : base(game, new Rectangle(-200, -200, 1200, 1200))
+        public Level1(Game game) : base(game, new Rectangle(-200, -200, 1280, 1056))
         {
+            Background = ContentLoader.GetResource<Texture2D>(EPrefab.map1);
         }
 
         public override void Initialize()
@@ -27,7 +29,7 @@ namespace scrapper.Scrapper.Maps
                             Height = 10,
                             Width = 10,
                             Prefab = EPrefab.pixel,
-                            LifeTime = TimeSpan.FromMilliseconds(5000),
+                            LifeTime = TimeSpan.FromMilliseconds(500),
                             Hitbox = 5
                         },
                         LaserEnabled = false,
@@ -36,7 +38,7 @@ namespace scrapper.Scrapper.Maps
                         ProjectileVelocity = 150f,
                         MaxHealth = 2,
                         HasPhases = false,
-                        ProjectilesCooldown = TimeSpan.FromMilliseconds(800),
+                        ProjectilesCooldown = TimeSpan.FromMilliseconds(1500),
                         PhasingHealth = 50,
                         BulletTickAngle = 8f,
                         LaserCooldown = TimeSpan.FromMilliseconds(20000),
@@ -56,7 +58,7 @@ namespace scrapper.Scrapper.Maps
                             Height = 20,
                             Width = 10,
                             Prefab = EPrefab.pixel,
-                            LifeTime = TimeSpan.FromMilliseconds(5000),
+                            LifeTime = TimeSpan.FromMilliseconds(2000),
                             Hitbox = 5
                         },
                         LaserEnabled = false,

@@ -1,4 +1,5 @@
-﻿namespace scrapper.Scrapper
+﻿// ReSharper disable InconsistentNaming
+namespace scrapper.Scrapper
 {
     public enum EPrefab
     {
@@ -6,6 +7,7 @@
         pixel,
         StandardFont,
         player,
-        scrap
+        scrap,
+        map1
     }
 }
