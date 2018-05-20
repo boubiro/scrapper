@@ -7,6 +7,7 @@ namespace scrapper.Scrapper
         pixel,
         StandardFont,
         player,
+        Player_animations,
         scrap,
         map1
     }

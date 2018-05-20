@@ -18,7 +18,7 @@ namespace scrapper.Scrapper.Entities
         // ReSharper disable once InconsistentNaming
         private const float TOLERANCE = 0.001f;
 
-        private const byte AnimationStepCount = 4;
+        private const byte AnimationStepCount = 8;
         private const float DamageTimeScaling = 0.2f;
 
         private static readonly TimeSpan AttackAnimationTime =
@@ -35,7 +35,7 @@ namespace scrapper.Scrapper.Entities
         private TimeSpan _dodgeTimeSpan = TimeSpan.Zero;
 
         public Player(Game game) : base(game, 32, 32, AnimationStepCount, TimeSpan.FromMilliseconds(100),
-            AttackAnimationTime, EPrefab.player,
+            AttackAnimationTime, EPrefab.Player_animations,
             Vector2.One * 300, Color.White)
         {
             HitBoxRadius = 16;
@@ -79,8 +79,8 @@ namespace scrapper.Scrapper.Entities
             {
                 direction = pad.ThumbSticks.Left;
                 direction.Y = -direction.Y;
-                if (pad.IsButtonDown(Buttons.X) && LastDirection.LengthSquared() > 0) dodging = true;
-                if (pad.IsButtonDown(Buttons.A) && LastDirection.LengthSquared() > 0) attacking = true;
+                if (pad.IsButtonDown(Buttons.A) && LastDirection.LengthSquared() > 0) dodging = true;
+                if (pad.IsButtonDown(Buttons.X) && LastDirection.LengthSquared() > 0) attacking = true;
             }
             else
             {
