@@ -11,30 +11,63 @@ namespace scrapper.Scrapper.Entities
     {
         private const float MoveSpeed = 200.5f;
         private const float DodgeDistance = 10f;
-        private readonly TimeSpan _maxDodgeTimeSpan = TimeSpan.FromMilliseconds(100);
         private const bool Teleport = false;
-        public const float SwordRange = 20f;
+        public const float SwordRange = 50f;
         public const float SwordSpread = 30f; // naming ftw, degree in both directions
 
         // ReSharper disable once InconsistentNaming
         private const float TOLERANCE = 0.001f;
+
+        private const byte AnimationStepCount = 4;
+        private const float DamageTimeScaling = 0.2f;
+
+        private static readonly TimeSpan AttackAnimationTime =
+            TimeSpan.FromMilliseconds(320 / (float) AnimationStepCount);
+
+        private readonly TimeSpan _maxDodgeTimeSpan = TimeSpan.FromMilliseconds(100);
         private bool _attacked;
         private bool _dodged;
-        private Vector2 _lastDirection;
 
-        public float SwordDamage { get; private set; } = 1f;
-        public Vector2 LastDirection => _lastDirection;
+#if DEBUG
+        private Color _debugColor = Color.White;
+#endif
 
         private TimeSpan _dodgeTimeSpan = TimeSpan.Zero;
 
-        public Player(Game game) : base(game, 32, 32, 4, TimeSpan.FromMilliseconds(100), TimeSpan.FromMilliseconds(80), EPrefab.player,
+        public Player(Game game) : base(game, 32, 32, AnimationStepCount, TimeSpan.FromMilliseconds(100),
+            AttackAnimationTime, EPrefab.player,
             Vector2.One * 300, Color.White)
         {
             HitBoxRadius = 16;
             DealDamage += entity => PlayerAttack?.Invoke(this);
         }
 
+        public float SwordDamage { get; private set; } = 1f;
+        public Vector2 LastDirection { get; private set; }
+
+        public float AttackDamage
+        {
+            get
+            {
+                SwordDamage -= SwordDamage > 1 ? 1f : 0;
+                AttackAnimationStepTime =
+                    TimeSpan.FromMilliseconds(SwordDamage * DamageTimeScaling * AttackAnimationTime.TotalMilliseconds);
+#if DEBUG
+                _debugColor = Color.Black;
+#endif
+                return SwordDamage;
+            }
+        }
+
         public event BasicEntityEvent PlayerAttack;
+
+        public void Sharpen(float amount)
+        {
+            SwordDamage += amount;
+#if DEBUG
+            _debugColor = Color.White;
+#endif
+        }
 
         public override void Update(GameTime gameTime)
         {
@@ -46,8 +79,8 @@ namespace scrapper.Scrapper.Entities
             {
                 direction = pad.ThumbSticks.Left;
                 direction.Y = -direction.Y;
-                if (pad.IsButtonDown(Buttons.X) && _lastDirection.LengthSquared() > 0) dodging = true;
-                if (pad.IsButtonDown(Buttons.A) && _lastDirection.LengthSquared() > 0) attacking = true;
+                if (pad.IsButtonDown(Buttons.X) && LastDirection.LengthSquared() > 0) dodging = true;
+                if (pad.IsButtonDown(Buttons.A) && LastDirection.LengthSquared() > 0) attacking = true;
             }
             else
             {
@@ -55,8 +88,8 @@ namespace scrapper.Scrapper.Entities
                 if (Keyboard.GetState().IsKeyDown(Keys.S)) direction.Y += 1;
                 if (Keyboard.GetState().IsKeyDown(Keys.A)) direction.X -= 1;
                 if (Keyboard.GetState().IsKeyDown(Keys.D)) direction.X += 1;
-                if (Keyboard.GetState().IsKeyDown(Keys.Space) && _lastDirection.LengthSquared() > 0) dodging = true;
-                if (Keyboard.GetState().IsKeyDown(Keys.Enter) && _lastDirection.LengthSquared() > 0) attacking = true;
+                if (Keyboard.GetState().IsKeyDown(Keys.Space) && LastDirection.LengthSquared() > 0) dodging = true;
+                if (Keyboard.GetState().IsKeyDown(Keys.Enter) && LastDirection.LengthSquared() > 0) attacking = true;
             }
 
             if (direction.LengthSquared() > 1) direction.Normalize();
@@ -78,7 +111,7 @@ namespace scrapper.Scrapper.Entities
             {
                 if (dodging && !_dodged)
                 {
-                    direction = _lastDirection;
+                    direction = LastDirection;
                     direction.Normalize();
                     direction *= DodgeDistance;
                     _dodgeTimeSpan += gameTime.ElapsedGameTime;
@@ -92,7 +125,7 @@ namespace scrapper.Scrapper.Entities
                         _dodgeTimeSpan = TimeSpan.Zero;
                     }
 
-                    _lastDirection = direction;
+                    LastDirection = direction;
                 }
             }
 
@@ -108,7 +141,7 @@ namespace scrapper.Scrapper.Entities
             {
                 if (!attacking) _attacked = false;
             }
-            
+
             if (Math.Abs(direction.X) < TOLERANCE)
             {
                 if (Math.Abs(direction.Y) > TOLERANCE)
@@ -123,6 +156,8 @@ namespace scrapper.Scrapper.Entities
 
             Position += direction * (float) gameTime.ElapsedGameTime.TotalSeconds * MoveSpeed;
             Position = ClampToMap(Position);
+
+            base.Update(gameTime);
         }
 
         public new bool Collide(Entity other)
@@ -153,10 +188,23 @@ namespace scrapper.Scrapper.Entities
 
         public override void Draw(GameTime gameTime)
         {
+            var sb = ((Game1) Game).SpriteBatch;
+#if DEBUG
+            var dir = new Vector2(LastDirection.X, LastDirection.Y);
+            dir.Normalize();
+            DrawingHelper.DrawLine(sb, ContentLoader.GetResource<Texture2D>(EPrefab.pixel), Position,
+                Position + (dir * SwordRange).Rotate(SwordSpread * VectorHelper.DegreeToRadian), 1, _debugColor);
+            DrawingHelper.DrawLine(sb, ContentLoader.GetResource<Texture2D>(EPrefab.pixel), Position,
+                Position + (dir * SwordRange), 1, _debugColor);
+            DrawingHelper.DrawLine(sb, ContentLoader.GetResource<Texture2D>(EPrefab.pixel), Position,
+                Position + (dir * SwordRange).Rotate(-SwordSpread * VectorHelper.DegreeToRadian), 1, _debugColor);
+            _debugColor = Color.Orange;
+#endif
+
             base.Draw(gameTime);
 
-            ((Game1) Game).SpriteBatch.DrawString(ContentLoader.GetResource<SpriteFont>(EPrefab.StandardFont),
-                Position + " " + _lastDirection, Vector2.One * 10f, Color.White);
+            sb.DrawString(ContentLoader.GetResource<SpriteFont>(EPrefab.StandardFont),
+                Position + " " + LastDirection, Vector2.One * 10f, Color.White);
         }
     }
 }

@@ -9,40 +9,43 @@ namespace scrapper.Scrapper.Animation
     {
         private readonly byte _animationStepCount;
         private readonly TimeSpan _animationStepTime;
-        private readonly TimeSpan _attackAnimationStepTime;
         private readonly byte _spriteHeight;
         private readonly byte _spriteWidth;
         private readonly EPrefab _textureName;
         private byte _animationIndex;
-        protected bool _inAttackAnimation = false;
-        private Color _color;
+        private readonly Color _color;
         private byte _currentAnimationStepIndex;
         private TimeSpan _elapsedSinceLastAnimationChange = TimeSpan.Zero;
+        protected bool _inAttackAnimation;
         private Texture2D _sprite;
 
         public AnimatedSprite(Game game, byte spriteWidth, byte spriteHeight, byte animationStepCount,
-            TimeSpan animationStepTime, TimeSpan attackAnimationStepTime, EPrefab textureName, Vector2 position, Color color) : base(game, position)
+            TimeSpan animationStepTime, TimeSpan attackAnimationStepTime, EPrefab textureName, Vector2 position,
+            Color color) : base(game, position)
         {
             _spriteWidth = spriteWidth;
             _spriteHeight = spriteHeight;
             _animationStepTime = animationStepTime;
-            _attackAnimationStepTime = attackAnimationStepTime;
+            AttackAnimationStepTime = attackAnimationStepTime;
             _textureName = textureName;
             _animationStepCount = animationStepCount;
             _color = color;
         }
 
         public AnimatedSprite(Game game, byte spriteWidth, byte spriteHeight, byte animationStepCount,
-            TimeSpan animationStepTime, TimeSpan attackAnimationStepTime, EPrefab textureName, Vector2 position, Color color, float hitBoxRadius) : base(game, position, hitBoxRadius)
+            TimeSpan animationStepTime, TimeSpan attackAnimationStepTime, EPrefab textureName, Vector2 position,
+            Color color, float hitBoxRadius) : base(game, position, hitBoxRadius)
         {
             _spriteWidth = spriteWidth;
             _spriteHeight = spriteHeight;
             _animationStepTime = animationStepTime;
-            _attackAnimationStepTime = attackAnimationStepTime;
+            AttackAnimationStepTime = attackAnimationStepTime;
             _textureName = textureName;
             _animationStepCount = animationStepCount;
             _color = color;
         }
+
+        protected TimeSpan AttackAnimationStepTime { get; set; }
 
         public event BasicEntityEvent DealDamage;
 
@@ -69,7 +72,7 @@ namespace scrapper.Scrapper.Animation
         public override void Draw(GameTime gameTime)
         {
             _elapsedSinceLastAnimationChange += gameTime.ElapsedGameTime;
-            if (_elapsedSinceLastAnimationChange > (_inAttackAnimation ? _attackAnimationStepTime : _animationStepTime))
+            if (_elapsedSinceLastAnimationChange > (_inAttackAnimation ? AttackAnimationStepTime : _animationStepTime))
             {
                 _elapsedSinceLastAnimationChange = TimeSpan.Zero;
                 _currentAnimationStepIndex++;
@@ -81,10 +84,14 @@ namespace scrapper.Scrapper.Animation
                 }
             }
 
-            var source = new Rectangle(_currentAnimationStepIndex * _spriteWidth, (_animationIndex + (_inAttackAnimation ? 4 : 0)) * _spriteHeight,
+            var source = new Rectangle(_currentAnimationStepIndex * _spriteWidth,
+                (_animationIndex + (_inAttackAnimation ? 4 : 0)) * _spriteHeight,
                 _spriteWidth, _spriteHeight);
 
-            ((Game1) Game).SpriteBatch.Draw(_sprite, Position - new Vector2(_spriteWidth / 2f, _spriteHeight / 2f), source, _color);
+            ((Game1) Game).SpriteBatch.Draw(_sprite, Position - new Vector2(_spriteWidth / 2f, _spriteHeight / 2f),
+                source, _color);
+
+            base.Draw(gameTime);
         }
     }
 }

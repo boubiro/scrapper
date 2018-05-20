@@ -11,38 +11,12 @@ namespace scrapper.Scrapper.Maps
 {
     public abstract class Map : DrawableGameComponent
     {
-        private MapData _mapData;
+        private readonly List<Entity> _componentsToAdd = new List<Entity>();
+        private readonly List<Entity> _componentsToRemove = new List<Entity>();
+        private readonly List<Entity> _dynamicEntities = new List<Entity>();
         private readonly List<Entity> _visibleComponents = new List<Entity>();
-        private readonly List<Entity> _cmponentsToRemove = new List<Entity>();
         private Rectangle _dimensions;
-        public byte WallWidth { get; set; } = 3;
-
-        public Rectangle Dimensions
-        {
-            get => _dimensions;
-            set
-            {
-                _dimensions = value;
-                ((Game1) this.Game).Camera.Map = value;
-            }
-        }
-
-        public void AttackMove(Entity entity)
-        {
-            var player = (Player) entity;
-            foreach (var component in _visibleComponents)
-            {
-                if ((player.Position - component.Position).LengthSquared() - Math.Pow(component.HitBoxRadius, 2) <
-                    Math.Pow(Player.SwordRange, 2))
-                {
-                    if (player.LastDirection.internalAngle(component.Position - player.Position) <
-                        Player.SwordSpread * VectorHelper.DegreeToRadian)
-                    {
-                        component.GetAttacked(player.SwordDamage);
-                    }
-                }
-            }
-        }
+        private MapData _mapData;
 
         public Map(Game game, Rectangle dimensions) : base(game)
         {
@@ -53,6 +27,35 @@ namespace scrapper.Scrapper.Maps
         {
             _mapData = mapData;
             Dimensions = dimensions;
+        }
+
+        public byte WallWidth { get; set; } = 3;
+
+        public Rectangle Dimensions
+        {
+            get => _dimensions;
+            set
+            {
+                _dimensions = value;
+                ((Game1) Game).Camera.Map = value;
+            }
+        }
+
+        public void AddEntities(List<Entity> entities)
+        {
+            foreach (var entity in entities) entity.Dead += RemoveNextUpdate;
+            _componentsToAdd.AddRange(entities);
+        }
+
+        public void AttackMove(Entity entity)
+        {
+            var player = (Player) entity;
+            foreach (var component in _visibleComponents)
+                if ((player.Position - component.Position).LengthSquared() - Math.Pow(component.HitBoxRadius, 2) <
+                    Math.Pow(Player.SwordRange, 2))
+                    if (player.LastDirection.internalAngle(component.Position - player.Position) <
+                        Player.SwordSpread * VectorHelper.DegreeToRadian)
+                        component.GetAttacked(player.AttackDamage);
         }
 
         public void SetMapData(MapData mapData)
@@ -69,8 +72,9 @@ namespace scrapper.Scrapper.Maps
                 switch (dataPoint.Type)
                 {
                     case EMechanicType.Bender:
-                        var bender = new Bender(this.Game, (BenderSettings) dataPoint.Settings, dataPoint.Position);
+                        var bender = new Bender(Game, (BenderSettings) dataPoint.Settings, dataPoint.Position);
                         bender.Initialize();
+                        bender.Dead += SpawnScrap;
                         _visibleComponents.Add(bender);
                         break;
                 }
@@ -84,34 +88,73 @@ namespace scrapper.Scrapper.Maps
             base.LoadContent();
         }
 
-        private void RemoveNextUpdate(Entity entity)
+        private void SpawnScrap(Entity enemy)
         {
-            _cmponentsToRemove.Add(entity);
+            var count = 0;
+            if (enemy.GetType() == typeof(Bender)) count = 10;
+
+            for (var i = 0; i < count; i++)
+            {
+                var scrap = new Scrap(Game, enemy.Position);
+                scrap.Initialize();
+                _componentsToAdd.Add(scrap);
+            }
         }
 
-        public override void Update(GameTime gameTime)
+        private void RemoveNextUpdate(Entity entity)
         {
-            foreach (var drawableGameComponent in _visibleComponents)
+            _componentsToRemove.Add(entity);
+        }
+
+        public void Update(GameTime gameTime, Player player)
+        {
+            foreach (var entity in _componentsToAdd)
             {
-                drawableGameComponent.Update(gameTime);
+                entity.Dead += RemoveNextUpdate;
+                _dynamicEntities.Add(entity);
             }
 
-            foreach (var entity in _cmponentsToRemove)
+            _componentsToAdd.Clear();
+
+            foreach (var drawableGameComponent in _visibleComponents) drawableGameComponent.Update(gameTime);
+
+            foreach (var dynamicEntity in _dynamicEntities)
+            {
+                dynamicEntity.Update(gameTime);
+                foreach (var entity in _dynamicEntities)
+                {
+                    if (dynamicEntity.DidCollide) break;
+                    dynamicEntity.Collide(entity);
+                }
+
+                foreach (var entity in _visibleComponents)
+                {
+                    if (entity.GetType().IsSubclassOf(typeof(Enemy))) break;
+                    if (dynamicEntity.DidCollide) break;
+                    dynamicEntity.Collide(entity);
+                }
+
+                player.Collide(dynamicEntity);
+            }
+
+            foreach (var entity in _componentsToRemove)
             {
                 _visibleComponents.Remove(entity);
+                _dynamicEntities.Remove(entity);
             }
+            _componentsToRemove.Clear();
 
             base.Update(gameTime);
         }
 
         public override void Draw(GameTime gameTime)
         {
-            DrawingHelper.DrawRectangle(((Game1) this.Game).SpriteBatch, ContentLoader.GetResource<Texture2D>(EPrefab.pixel), Dimensions, WallWidth, Color.Black);
+            foreach (var entity in _dynamicEntities) entity.Draw(gameTime);
 
-            foreach (var drawableGameComponent in _visibleComponents)
-            {
-                drawableGameComponent.Draw(gameTime);
-            }
+            DrawingHelper.DrawRectangle(((Game1) Game).SpriteBatch, ContentLoader.GetResource<Texture2D>(EPrefab.pixel),
+                Dimensions, WallWidth, Color.Black);
+
+            foreach (var drawableGameComponent in _visibleComponents) drawableGameComponent.Draw(gameTime);
 
             base.Draw(gameTime);
         }

@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace scrapper.Scrapper.Entities.Mechanics.Enemies
 {
@@ -17,7 +13,7 @@ namespace scrapper.Scrapper.Entities.Mechanics.Enemies
         public float BulletTickAngle;
         public ProjectileSettings ProjectileSettings;
         public float ProjectileVelocity;
-        
+
         public enum EBenderProjectileMode
         {
             None,

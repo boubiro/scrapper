@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using scrapper.Scrapper.Entities;
 
 namespace scrapper.Scrapper
@@ -104,7 +103,6 @@ namespace scrapper.Scrapper
 
             if (width < Map.Width || height < Map.Height)
             {
-
                 var cameraMax = new Vector2(Map.X + Map.Width -
                                             width / 2,
                     Map.Y + Map.Height -

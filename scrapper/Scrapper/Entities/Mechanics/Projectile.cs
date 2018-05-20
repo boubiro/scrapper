@@ -6,12 +6,13 @@ namespace scrapper.Scrapper.Entities.Mechanics
 {
     internal class Projectile : AnimatedSprite
     {
+        private readonly Vector2 _direction;
         private readonly ProjectileSettings _settings;
         private TimeSpan _lifeSpan = TimeSpan.Zero;
-        private readonly Vector2 _direction;
 
         public Projectile(Game game, ProjectileSettings settings, Vector2 position, Vector2 direction) :
-            base(game, settings.Width, settings.Height, 0, TimeSpan.Zero, TimeSpan.Zero, settings.Prefab, position, settings.Color, settings.Hitbox)
+            base(game, settings.Width, settings.Height, 1, TimeSpan.Zero, TimeSpan.Zero, settings.Prefab, position,
+                settings.Color, settings.Hitbox)
         {
             _settings = settings;
             _direction = direction;
