@@ -23,6 +23,7 @@ namespace scrapper
 
         public Camera Camera => _camera;
         public Rectangle Map => _map.Dimensions;
+        public byte WallWidth => _map.WallWidth;
         
         public Game1()
         {
@@ -46,6 +47,7 @@ namespace scrapper
 
             _player = new Player(this);
             _map = new Level1(this);
+            _player.PlayerAttack += _map.AttackMove;
         }
 
         public void AddEntities(List<Entity> entities)
@@ -114,6 +116,13 @@ namespace scrapper
             foreach (var dynamicEntity in _dynamicEntities)
             {
                 dynamicEntity.Update(gameTime);
+                foreach (var entity in _dynamicEntities)
+                {
+                    if (dynamicEntity.DidCollide) break;
+                    dynamicEntity.Collide(entity);
+                }
+
+                _player.Collide(dynamicEntity);
             }
 
             foreach (var entity in _entitiesToRemove)
@@ -132,7 +141,7 @@ namespace scrapper
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
             _camera.CenterOn(_player);
-            SpriteBatch.Begin(transformMatrix:_camera.TranslationMatrix);
+            SpriteBatch.Begin(samplerState:SamplerState.PointClamp, transformMatrix:_camera.TranslationMatrix);
             // TODO: Add your drawing code here
             _map.Draw(gameTime);
             _player.Draw(gameTime);

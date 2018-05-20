@@ -16,7 +16,7 @@ namespace scrapper.Scrapper.Entities.Mechanics.Enemies
         private TimeSpan _timeSinceLastBulletSpawn = TimeSpan.Zero;
         private int _tickindex = 0;
 
-        public Bender(Game game, BenderSettings settings, Vector2 position) : base(game, 32, 32, 4, TimeSpan.FromMilliseconds(500), EPrefab.placeholder, settings, position)
+        public Bender(Game game, BenderSettings settings, Vector2 position) : base(game, 32, 32, 4, TimeSpan.FromMilliseconds(500), TimeSpan.FromMilliseconds(500), EPrefab.placeholder, settings, position)
         {
             _settings = settings;
             Phase += Randomize;

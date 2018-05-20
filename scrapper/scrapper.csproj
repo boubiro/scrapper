@@ -55,7 +55,7 @@
     <Compile Include="Scrapper\Entities\Mechanics\Enemies\BenderSettings.cs" />
     <Compile Include="Scrapper\Entities\Mechanics\Enemies\Enemy.cs" />
     <Compile Include="Scrapper\Entities\Mechanics\Enemies\IEnemySettings.cs" />
-    <Compile Include="Scrapper\Entities\Mechanics\MechanicSettings.cs" />
+    <Compile Include="Scrapper\Entities\Mechanics\IMechanicSettings.cs" />
     <Compile Include="Scrapper\Entities\Mechanics\Projectile.cs" />
     <Compile Include="Scrapper\Entities\Mechanics\ProjectileSettings.cs" />
     <Compile Include="Scrapper\Entities\Player.cs" />

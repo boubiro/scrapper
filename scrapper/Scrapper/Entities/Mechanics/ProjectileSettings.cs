@@ -14,5 +14,6 @@ namespace scrapper.Scrapper.Entities.Mechanics
         public EPrefab Prefab;
         public Color Color;
         public TimeSpan LifeTime;
+        public float Hitbox { get; set; }
     }
 }

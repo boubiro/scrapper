@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using scrapper.Scrapper.Entities;
@@ -14,6 +15,7 @@ namespace scrapper.Scrapper.Maps
         private readonly List<Entity> _visibleComponents = new List<Entity>();
         private readonly List<Entity> _cmponentsToRemove = new List<Entity>();
         private Rectangle _dimensions;
+        public byte WallWidth { get; set; } = 3;
 
         public Rectangle Dimensions
         {
@@ -22,6 +24,23 @@ namespace scrapper.Scrapper.Maps
             {
                 _dimensions = value;
                 ((Game1) this.Game).Camera.Map = value;
+            }
+        }
+
+        public void AttackMove(Entity entity)
+        {
+            var player = (Player) entity;
+            foreach (var component in _visibleComponents)
+            {
+                if ((player.Position - component.Position).LengthSquared() - Math.Pow(component.HitBoxRadius, 2) <
+                    Math.Pow(Player.SwordRange, 2))
+                {
+                    if (player.LastDirection.internalAngle(component.Position - player.Position) <
+                        Player.SwordSpread * VectorHelper.DegreeToRadian)
+                    {
+                        component.GetAttacked(player.SwordDamage);
+                    }
+                }
             }
         }
 
@@ -87,7 +106,7 @@ namespace scrapper.Scrapper.Maps
 
         public override void Draw(GameTime gameTime)
         {
-            DrawingHelper.DrawRectangle(((Game1) this.Game).SpriteBatch, ContentLoader.GetResource<Texture2D>(EPrefab.pixel), Dimensions, 3, Color.Black);
+            DrawingHelper.DrawRectangle(((Game1) this.Game).SpriteBatch, ContentLoader.GetResource<Texture2D>(EPrefab.pixel), Dimensions, WallWidth, Color.Black);
 
             foreach (var drawableGameComponent in _visibleComponents)
             {

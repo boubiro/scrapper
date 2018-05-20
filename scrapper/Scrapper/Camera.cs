@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using scrapper.Scrapper.Entities;
 
 namespace scrapper.Scrapper
@@ -98,14 +99,23 @@ namespace scrapper.Scrapper
         // Clamp the camera so it never leaves the visible area of the map.
         private Vector2 MapClampedPosition(Vector2 position)
         {
-            var cameraMax = new Vector2(Map.Width -
-                                        ViewportWidth / Zoom / 2,
-                Map.Height -
-                ViewportHeight / Zoom / 2);
+            var width = ViewportWidth / Zoom;
+            var height = ViewportHeight / Zoom;
 
-            return Vector2.Clamp(position,
-                new Vector2(ViewportWidth / Zoom / 2, ViewportHeight / Zoom / 2),
-                cameraMax);
+            if (width < Map.Width || height < Map.Height)
+            {
+
+                var cameraMax = new Vector2(Map.X + Map.Width -
+                                            width / 2,
+                    Map.Y + Map.Height -
+                    height / 2);
+
+                return Vector2.Clamp(position,
+                    new Vector2(Map.X + width / 2, Map.Y + height / 2),
+                    cameraMax);
+            }
+
+            return new Vector2(Map.Center.X, Map.Center.Y);
         }
 
         public Vector2 WorldToScreen(Vector2 worldPosition)
