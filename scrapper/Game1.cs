@@ -9,22 +9,15 @@ using scrapper.Scrapper.Maps;
 namespace scrapper
 {
     /// <summary>
-    /// This is the main type for your game.
+    ///     This is the main type for your game.
     /// </summary>
     public class Game1 : Game
     {
-        readonly GraphicsDeviceManager graphics;
-        public SpriteBatch SpriteBatch { get; private set; }
-        private readonly Camera _camera;
-        private readonly Player _player;
-        private readonly List<Entity> _dynamicEntities = new List<Entity>();
         private readonly List<Entity> _entitiesToRemove = new List<Entity>();
-        private Map _map;
+        private readonly Player _player;
+        private readonly GraphicsDeviceManager graphics;
+        private readonly Map _map;
 
-        public Camera Camera => _camera;
-        public Rectangle Map => _map.Dimensions;
-        public byte WallWidth => _map.WallWidth;
-        
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -39,7 +32,7 @@ namespace scrapper
 
             SpriteBatch = new SpriteBatch(GraphicsDevice);
 
-            _camera = new Camera
+            Camera = new Camera
             {
                 ViewportWidth = graphics.PreferredBackBufferWidth,
                 ViewportHeight = graphics.PreferredBackBufferHeight
@@ -50,14 +43,12 @@ namespace scrapper
             _player.PlayerAttack += _map.AttackMove;
         }
 
-        public void AddEntities(List<Entity> entities)
-        {
-            foreach (var entity in entities)
-            {
-                entity.Dead += RemoveNextUpdate;
-            }
-            _dynamicEntities.AddRange(entities);
-        }
+        public SpriteBatch SpriteBatch { get; }
+
+        public Camera Camera { get; }
+
+        public Rectangle Map => _map.Dimensions;
+        public byte WallWidth => _map.WallWidth;
 
         private void RemoveNextUpdate(Entity entity)
         {
@@ -65,10 +56,10 @@ namespace scrapper
         }
 
         /// <summary>
-        /// Allows the game to perform any initialization it needs to before starting to run.
-        /// This is where it can query for any required services and load any non-graphic
-        /// related content.  Calling base.Initialize will enumerate through any components
-        /// and initialize them as well.
+        ///     Allows the game to perform any initialization it needs to before starting to run.
+        ///     This is where it can query for any required services and load any non-graphic
+        ///     related content.  Calling base.Initialize will enumerate through any components
+        ///     and initialize them as well.
         /// </summary>
         protected override void Initialize()
         {
@@ -79,8 +70,8 @@ namespace scrapper
         }
 
         /// <summary>
-        /// LoadContent will be called once per game and is the place to load
-        /// all of your content.
+        ///     LoadContent will be called once per game and is the place to load
+        ///     all of your content.
         /// </summary>
         protected override void LoadContent()
         {
@@ -90,65 +81,50 @@ namespace scrapper
         }
 
         /// <summary>
-        /// UnloadContent will be called once per game and is the place to unload
-        /// game-specific content.
+        ///     UnloadContent will be called once per game and is the place to unload
+        ///     game-specific content.
         /// </summary>
         protected override void UnloadContent()
         {
             // TODO: Unload any non ContentManager content here
         }
 
+        public void AddEntities(List<Entity> entities)
+        {
+            _map.AddEntities(entities);
+        }
+
         /// <summary>
-        /// Allows the game to run logic such as updating the world,
-        /// checking for collisions, gathering input, and playing audio.
+        ///     Allows the game to run logic such as updating the world,
+        ///     checking for collisions, gathering input, and playing audio.
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed ||
+                Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            _map.Update(gameTime);
+            _map.Update(gameTime, _player);
 
             // TODO: Add your update logic here
             _player.Update(gameTime);
-
-            foreach (var dynamicEntity in _dynamicEntities)
-            {
-                dynamicEntity.Update(gameTime);
-                foreach (var entity in _dynamicEntities)
-                {
-                    if (dynamicEntity.DidCollide) break;
-                    dynamicEntity.Collide(entity);
-                }
-
-                _player.Collide(dynamicEntity);
-            }
-
-            foreach (var entity in _entitiesToRemove)
-            {
-                _dynamicEntities.Remove(entity);
-            }
 
             base.Update(gameTime);
         }
 
         /// <summary>
-        /// This is called when the game should draw itself.
+        ///     This is called when the game should draw itself.
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
-            _camera.CenterOn(_player);
-            SpriteBatch.Begin(samplerState:SamplerState.PointClamp, transformMatrix:_camera.TranslationMatrix);
+            Camera.CenterOn(_player);
+            SpriteBatch.Begin(samplerState: SamplerState.PointClamp, transformMatrix: Camera.TranslationMatrix);
             // TODO: Add your drawing code here
             _map.Draw(gameTime);
             _player.Draw(gameTime);
-            foreach (var entity in _dynamicEntities)
-            {
-                entity.Draw(gameTime);
-            }
             SpriteBatch.End();
             base.Draw(gameTime);
         }

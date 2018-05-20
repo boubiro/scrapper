@@ -1,22 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using scrapper.Scrapper.Helper;
 
 namespace scrapper.Scrapper.Entities.Mechanics.Enemies
 {
-    class Bender : Enemy
+    internal class Bender : Enemy
     {
-        private BenderSettings _settings;
-        private TimeSpan _timeSinceLastLaser = TimeSpan.Zero;
         private bool _laserFired = true;
+        private BenderSettings _settings;
+        private int _tickindex;
         private TimeSpan _timeSinceLastBulletSpawn = TimeSpan.Zero;
-        private int _tickindex = 0;
+        private TimeSpan _timeSinceLastLaser = TimeSpan.Zero;
 
-        public Bender(Game game, BenderSettings settings, Vector2 position) : base(game, 32, 32, 4, TimeSpan.FromMilliseconds(500), TimeSpan.FromMilliseconds(500), EPrefab.placeholder, settings, position)
+        public Bender(Game game, BenderSettings settings, Vector2 position) : base(game, 32, 32, 4,
+            TimeSpan.FromMilliseconds(500), TimeSpan.FromMilliseconds(500), EPrefab.placeholder, settings, position)
         {
             _settings = settings;
             Phase += Randomize;
@@ -66,12 +64,13 @@ namespace scrapper.Scrapper.Entities.Mechanics.Enemies
             if (_settings.ProjectileMode == BenderSettings.EBenderProjectileMode.Spiral)
             {
                 var bullets = new List<Entity>();
-                var anglePerBullet = (360f / _settings.BulletCount) * VectorHelper.DegreeToRadian;
+                var anglePerBullet = 360f / _settings.BulletCount * VectorHelper.DegreeToRadian;
                 var maxTick = 1 / (_settings.BulletTickAngle / 360f);
                 for (var i = 0; i < _settings.BulletCount; i++)
                 {
-                    var direction = (Vector2.UnitY * _settings.ProjectileVelocity).Rotate(anglePerBullet * i + _settings.BulletTickAngle * VectorHelper.DegreeToRadian * _tickindex);
-                    var projectile = new Projectile(this.Game, _settings.ProjectileSettings, this.Position, direction);
+                    var direction = (Vector2.UnitY * _settings.ProjectileVelocity).Rotate(
+                        anglePerBullet * i + _settings.BulletTickAngle * VectorHelper.DegreeToRadian * _tickindex);
+                    var projectile = new Projectile(Game, _settings.ProjectileSettings, Position, direction);
                     projectile.Initialize();
                     bullets.Add(projectile);
                 }
@@ -80,7 +79,7 @@ namespace scrapper.Scrapper.Entities.Mechanics.Enemies
                     _tickindex = 1;
                 _tickindex++;
 
-                ((Game1) this.Game).AddEntities(bullets);
+                ((Game1) Game).AddEntities(bullets);
             }
         }
     }

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿// ReSharper disable InconsistentNaming
 namespace scrapper.Scrapper
 {
     public enum EPrefab
@@ -11,6 +6,8 @@ namespace scrapper.Scrapper
         placeholder,
         pixel,
         StandardFont,
-        player
+        player,
+        scrap,
+        map1
     }
 }
